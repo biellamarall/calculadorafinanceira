@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Gastos da Viagem à Itália</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@500;600;700;800&family=Cormorant+Garamond:wght@500;600;700&family=Lora:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--ac:#b5532f;--bg:#f6efe4;--card:#fffaf2;--tx:#3a2a1f;--on:#fff;--r:14px;--fh:'Playfair Display',Georgia,serif;
+--mu:color-mix(in srgb,var(--tx) 58%,var(--bg));--bd:color-mix(in srgb,var(--tx) 11%,var(--card));--in:color-mix(in srgb,var(--tx) 6%,var(--card));
+--tint:color-mix(in srgb,var(--ac) 13%,var(--card));--wa:#e8a33d;--er:#d9453f;--ok:var(--ac);
+--sh:0 1px 2px rgba(40,25,10,.05),0 8px 24px rgba(40,25,10,.07);
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased;transition:background .25s,color .25s}
+.stripe{height:5px;background:linear-gradient(90deg,#009246 33.3%,#f4f1ea 33.3% 66.6%,#ce2b37 66.6%)}
+main{max-width:640px;margin:0 auto;padding:22px 16px 48px}
+.hd{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.eyebrow{font-size:.7rem;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--ac)}
+h1,h2,.total,.cd .big{font-family:var(--fh)}
+h1{font-size:2rem;font-weight:700;letter-spacing:-.01em;margin:2px 0 0;line-height:1.1}
+.hs{color:var(--mu);font-size:.88rem;margin:6px 0 18px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:calc(var(--r)*1.35);padding:18px;margin-bottom:14px;box-shadow:var(--sh)}
+.card h2{font-size:1.15rem;font-weight:600;margin:0 0 10px}
+.card h3{font-size:.74rem;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--mu);margin:16px 0 6px}
+label{display:block;font-size:.76rem;font-weight:500;color:var(--mu);margin-bottom:5px}
+input,select{width:100%;padding:11px 12px;border:1px solid transparent;border-radius:var(--r);background:var(--in);color:var(--tx);font:inherit;font-size:.95rem;outline:none;transition:border .15s,background .15s}
+input:focus,select:focus{border-color:var(--ac);background:var(--card)}
+input[type=color]{padding:3px;height:42px;cursor:pointer}
+.row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px}.row:last-child{margin-bottom:0}.row>div{flex:1;min-width:130px}
+button{border:0;border-radius:var(--r);padding:11px 16px;font:inherit;font-size:.92rem;font-weight:600;cursor:pointer;background:var(--ac);color:var(--on);transition:filter .15s,transform .05s}
+button:hover{filter:brightness(1.06)}button:active{transform:scale(.98)}
+button:disabled{opacity:.45;cursor:not-allowed}
+button.sec{background:var(--in);color:var(--tx)}
+button.x{background:transparent;color:var(--mu);padding:4px 8px;font-size:1rem;font-weight:400}button.x:hover{color:var(--er)}
+.totals{display:flex;gap:14px;flex-wrap:wrap;align-items:baseline}
+.total{font-size:2.3rem;font-weight:700;margin:2px 0}.total.b{font-family:Inter,sans-serif;font-size:1.15rem;font-weight:500;color:var(--mu)}
+.bar{height:8px;background:var(--in);border-radius:99px;overflow:hidden;margin:12px 0 8px}
+.bar>i{display:block;height:100%;width:0;background:var(--ok);border-radius:99px;transition:width .35s,background .3s}
+.msg{font-size:.88rem;color:var(--mu)}
+.sync{font-size:.78rem;color:var(--mu);margin:0 0 14px}
+.item{display:flex;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid var(--bd)}
+.item:last-child{border:0;padding-bottom:0}.item:first-child{padding-top:0}
+.item .d{flex:1;min-width:0}.item .d b{display:block;font-weight:600;overflow-wrap:anywhere}
+.item small{color:var(--mu);font-size:.8rem}.item .v{font-weight:650;white-space:nowrap;text-align:right}.item .v small{display:block;font-weight:400}
+.empty{color:var(--mu);text-align:center;padding:18px 0;font-size:.92rem}
+.actions{display:flex;gap:10px;flex-wrap:wrap}
+.cd{position:relative;overflow:hidden;text-align:center;background:var(--tint);border-color:transparent;box-shadow:none;padding:24px 18px 78px}
+.cd .big{font-size:3.6rem;font-weight:800;line-height:1;color:var(--ac);margin:6px 0 4px}
+.cd .sub{color:var(--mu);font-size:.85rem;letter-spacing:.04em}
+.cd .parts{display:flex;justify-content:center;gap:8px;margin-top:12px;position:relative}
+.cd .parts span{background:var(--card);border-radius:99px;padding:5px 14px;font-size:.85rem;font-weight:600}
+.arches{position:absolute;left:0;right:0;bottom:0;color:var(--ac);opacity:.22;pointer-events:none}
+.tabs{display:flex;gap:4px;background:var(--in);border-radius:calc(var(--r)*1.1);padding:4px;margin-bottom:16px}
+.tabs button{flex:1;background:transparent;color:var(--mu);padding:9px}
+.tabs button.on{background:var(--card);color:var(--tx);box-shadow:0 1px 3px rgba(0,0,0,.1)}
+[hidden]{display:none!important}
+.stage{display:flex;gap:14px;padding:12px 0;border-bottom:1px solid var(--bd)}.stage:last-child{border:0;padding-bottom:0}
+.stage .dt{min-width:84px;font-weight:650;font-size:.88rem;color:var(--ac)}.stage p{margin:2px 0;font-size:.9rem;line-height:1.45}
+.card ul{margin:6px 0;padding-left:20px}.card li{margin:5px 0;font-size:.9rem;line-height:1.4}
+a{color:var(--ac)}
+a.btn{display:inline-block;background:var(--ac);color:var(--on);text-decoration:none;border-radius:var(--r);padding:11px 16px;font-size:.92rem;font-weight:600}
+.flt{padding:10px 0;border-bottom:1px solid var(--bd);font-size:.9rem;line-height:1.4}.flt:last-of-type{border:0}
+.ib{background:var(--card);color:var(--tx);border:1px solid var(--bd);width:42px;height:42px;padding:0;border-radius:var(--r);font-size:1.1rem;flex-shrink:0}
+.theme{display:none}.theme.open{display:block}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0 16px}
+.chips button{display:flex;align-items:center;gap:7px;background:var(--in);color:var(--tx);font-weight:500;font-size:.82rem;padding:7px 11px;border:2px solid transparent;border-radius:99px}
+.chips button.on{border-color:var(--ac)}
+.chips i{display:inline-flex}.chips i b{width:12px;height:12px;border-radius:50%;margin-left:-4px;border:1.5px solid var(--card)}.chips i b:first-child{margin-left:0}
+.cgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:6px 0 16px}
+.seg{display:flex;gap:6px;margin:6px 0 16px}.seg button{flex:1;background:var(--in);color:var(--tx);font-weight:500}.seg button.on{background:var(--ac);color:var(--on)}
+@media print{.noprint{display:none}}
+</style>
+</head>
+<body>
+<div class="stripe"></div>
+<main>
+<div class="hd"><div><div class="eyebrow">Itinerario · 2027</div><h1>Buon viaggio!</h1></div><button class="ib noprint" id="tbtn" aria-label="Personalizar tema">🎨</button></div>
+<p class="hs">Itália e Lisboa · 24 de março a 6 de abril de 2027</p>
+<div class="card theme noprint" id="tpanel">
+  <h2>Personalizar o tema</h2>
+  <label>Estilos prontos</label>
+  <div class="chips" id="chips"></div>
+  <label>Cores (toque para escolher qualquer cor)</label>
+  <div class="cgrid">
+    <div><label for="c-ac">Destaque</label><input type="color" id="c-ac"></div>
+    <div><label for="c-bg">Fundo</label><input type="color" id="c-bg"></div>
+    <div><label for="c-card">Cartões</label><input type="color" id="c-card"></div>
+    <div><label for="c-tx">Texto</label><input type="color" id="c-tx"></div>
+  </div>
+  <label for="fnt">Fonte dos títulos</label>
+  <select id="fnt" style="margin:6px 0 16px"></select>
+  <label>Cantos</label>
+  <div class="seg" id="rad"><button data-r="reto">Retos</button><button data-r="suave">Suaves</button><button data-r="redondo">Redondos</button></div>
+  <button class="sec" id="treset">Voltar ao estilo Toscana</button>
+</div>
+<div class="card cd" id="cd"><div class="sub" id="cdsub">MANCANO</div><div class="big" id="cddays">—</div><div class="sub" id="cdlabel">dias para a saída</div><div class="parts" id="cdparts"></div>
+<svg class="arches" width="100%" height="56" aria-hidden="true"><defs><pattern id="ar" width="44" height="56" patternUnits="userSpaceOnUse"><path d="M5 56V26a17 17 0 0 1 34 0V56" fill="none" stroke="currentColor" stroke-width="2"/></pattern></defs><rect width="100%" height="56" fill="url(#ar)"/></svg></div>
+<div class="tabs noprint"><button id="tg" class="on">💶 Gastos</button><button id="tr">🗺️ Roteiro</button></div>
+<div id="tab-gastos">
+<p class="sync" id="sync">Conectando…</p>
+
+<div class="card">
+  <div class="msg">Il conto · total gasto</div>
+  <div class="totals"><div class="total" id="totaleur">€ 0,00</div><div class="total b" id="totalbrl"></div></div>
+  <div class="bar"><i id="fill"></i></div>
+  <div class="msg" id="status">Nenhum limite definido.</div>
+</div>
+
+<div class="card">
+  <div class="row">
+    <div><label for="limit">Limite da viagem (€) — opcional</label>
+      <input id="limit" type="number" inputmode="decimal" min="0" step="0.01" placeholder="Ex.: 3000"></div>
+    <div><label for="rate">Cotação: 1 € = R$</label>
+      <input id="rate" type="number" inputmode="decimal" min="0" step="0.01" placeholder="Ex.: 6,20"></div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="row">
+    <div style="flex:2"><label for="desc">Descrição</label><input id="desc" placeholder="Ex.: Jantar em Roma"></div>
+  </div>
+  <div class="row">
+    <div><label for="val">Valor</label><input id="val" type="number" inputmode="decimal" min="0" step="0.01" placeholder="0,00"></div>
+    <div><label for="cur">Moeda</label><select id="cur"><option value="EUR">€ Euro</option><option value="BRL">R$ Real</option></select></div>
+    <div><label for="dt">Data</label><input id="dt" type="date"></div>
+  </div>
+  <div class="actions" style="margin-top:12px"><button id="add">+ Adicionar gasto</button></div>
+  <p class="msg" id="addmsg" style="margin:8px 0 0"></p>
+</div>
+
+<div class="card"><div id="list"></div></div>
+
+<div class="actions noprint">
+  <button id="pdf">📄 Salvar em PDF</button>
+  <button id="clear" class="sec">Limpar tudo</button>
+</div>
+<p class="msg" id="note"></p>
+</div>
+<div id="tab-roteiro" hidden>
+<div class="card">
+  <h2>Itália e Lisboa · 24/03 a 06/04/2027</h2>
+  <p class="msg" style="margin-top:0">Viajantes: Tha, Marcelo, Gabriel, Ari, Thi e Jenni.</p>
+  <a class="btn" href="https://comfy-hummingbird-6bb588.netlify.app" target="_blank" rel="noopener">Abrir roteiro completo (dia a dia, hotéis, outlets)</a>
+</div>
+<div class="card">
+  <h2>Resumo das etapas</h2>
+  <div class="stage"><div class="dt">24/03</div><div><p><b>Saída</b> de Blumenau às 15h rumo ao aeroporto de Florianópolis (FLN), cerca de 2h a 2h30 de carro. Voo às 22:15.</p></div></div>
+  <div class="stage"><div class="dt">25/03</div><div><p><b>Chegada a Lisboa</b> às 11:45 e conexão para Roma, com chegada às 18:45.</p></div></div>
+  <div class="stage"><div class="dt">25 a 28/03</div><div><p><b>Roma.</b> Fase mais fria da Itália no roteiro; manhãs e noites pedem casaco fechado.</p></div></div>
+  <div class="stage"><div class="dt">29 a 31/03</div><div><p><b>Toscana e Vêneto.</b> Clima parecido com Roma, um pouco mais ameno de dia na Toscana.</p></div></div>
+  <div class="stage"><div class="dt">01 e 02/04</div><div><p><b>Milão.</b> Etapa mais úmida; leve o impermeável à mão.</p><p><b>02/04, Lugano</b> (Suíça), passeio de um dia. No alto dos montes o frio corta mais: leve um casaco extra.</p></div></div>
+  <div class="stage"><div class="dt">03 a 06/04</div><div><p><b>Lisboa</b> (Hotel Príncipe Lisboa). Chegada de Milão às 13:50 do dia 03. Check-out ao meio-dia do dia 06; dá para deixar as malas no hotel e aproveitar o dia até o voo das 23:30.</p></div></div>
+  <div class="stage"><div class="dt">07/04</div><div><p><b>Volta ao Brasil:</b> chegada a Guarulhos às 05:50 e a Florianópolis às 10:35. Combinem o transporte de volta a Blumenau.</p></div></div>
+</div>
+<div class="card">
+  <h2>✈️ Voos (TAP, tarifa BASIC)</h2>
+  <div class="flt"><b>24/03 · TP110</b> Florianópolis 22:15 → Lisboa 11:45 (25/03)</div>
+  <div class="flt"><b>25/03 · TP836</b> Lisboa 14:40 → Roma (FCO) 18:45 · conexão de 2h55</div>
+  <div class="flt"><b>03/04 · TP823</b> Milão (MXP) 11:50 → Lisboa 13:50</div>
+  <div class="flt"><b>06/04 · TP87</b> Lisboa 23:30 → Guarulhos 05:50 (07/04)</div>
+  <div class="flt"><b>07/04 · TP4066 / G3 1140</b> Guarulhos 09:15 → Florianópolis 10:35 · conexão de 3h25</div>
+  <h3>Localizadores</h3>
+  <ul><li>A2T7HN: Gabriel, Tha e Marcelo</li><li>A4ST7Y: Ari, Jenni e Thi</li></ul>
+  <h3>Bagagem por pessoa, em todos os trechos</h3>
+  <p class="msg" style="margin:0">Item pessoal + mala de mão de 10 kg + despachada de 23 kg.</p>
+  <h3>Fuso em relação a Brasília</h3>
+  <ul><li>Itália: +4h até 27/03 e +5h a partir de 28/03.</li><li>Lisboa: +3h até 27/03 e +4h a partir de 28/03.</li></ul>
+</div>
+<div class="card">
+  <h2>🏨 Lisboa: perto do Hotel Príncipe Lisboa</h2>
+  <ul>
+    <li>Estação São Sebastião (metrô Vermelha e Azul): 3 min a pé</li>
+    <li>Estação Saldanha: 7 min a pé</li>
+    <li>Museu Calouste Gulbenkian: cerca de 500 m</li>
+    <li>Pastelaria Sena e Padaria do Bairro: 3 min a pé</li>
+    <li>Marquês de Pombal e Parque Eduardo VII: 17 min a pé</li>
+    <li>Avenida da Liberdade: 18 min a pé</li>
+    <li>Aeroporto (metrô Vermelha, direto): cerca de 25 min</li>
+  </ul>
+</div>
+<div class="card">
+  <h2>📞 Contatos úteis</h2>
+  <ul><li>Emergência: 112 na Itália e em Portugal</li><li>Seguro InterMundial, assistência: <a href="tel:0034915141304">0034 915 141 304</a> (Espanha). Peça ligação a cobrar.</li></ul>
+</div>
+</div>
+</main>
+
+<script>
+const $=id=>document.getElementById(id);
+const eur=n=>n.toLocaleString('pt-BR',{style:'currency',currency:'EUR'});
+const brl=n=>n.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+const fd=s=>s?s.split('-').reverse().join('/'):'';
+const today=()=>{const d=new Date();return new Date(d-d.getTimezoneOffset()*6e4).toISOString().slice(0,10)};
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+let items=[],limit=0,rate=0,names={},me=null,canWrite=true,store=null,userApi=null;
+
+/* valores de cada gasto nas duas moedas */
+const rt=i=>i.rate||rate;
+const eurOf=i=>i.cur==='EUR'?i.v:(rt(i)>0?i.v/rt(i):0);
+const brlOf=i=>i.cur==='BRL'?i.v:(rt(i)>0?i.v*rt(i):null);
+const sumEur=()=>items.reduce((a,i)=>a+eurOf(i),0);
+const sumBrl=()=>items.reduce((a,i)=>a+(brlOf(i)||0),0);
+
+/* ---------- armazenamento: compartilhado (db) ou local ---------- */
+const local={
+  load(){try{const s=JSON.parse(localStorage.getItem('viagem-italia-v2')||'null');if(s){items=s.items||[];limit=s.limit||0;rate=s.rate||0}}catch(e){}},
+  save(){try{localStorage.setItem('viagem-italia-v2',JSON.stringify({items,limit,rate}))}catch(e){}},
+  async put(it){items.push(it);this.save();render()},
+  async del(id){items=items.filter(i=>i.id!==id);this.save();render()},
+  async settings(){this.save();render()},
+  async clear(){items=[];this.save();render()}
+};
+function dbStore(db){
+  const col=db.collection('expenses'),sref=db.doc('settings/main');
+  return{
+    async put(it){await col.doc(it.id).set(it)},
+    async del(id){await col.doc(id).delete()},
+    async settings(){await sref.set({limit,rate})},
+    async clear(){await Promise.all(items.map(i=>col.doc(i.id).delete()))}
+  };
+}
+
+async function init(){
+  let db=null;
+  try{db=window.claude?await claude.use('db'):null}catch(e){}
+  if(!db){store=local;local.load();setSync('Modo local (neste aparelho). Abra pelo link do claude.ai, logado, para compartilhar.');applyInputs();render();return}
+  try{userApi=await claude.use('user')}catch(e){}
+  try{me=userApi?await userApi.id():null}catch(e){}
+  try{const w=userApi?await userApi.can('data.write'):null;if(w===false)canWrite=false}catch(e){}
+  store=dbStore(db);
+  setSync(canWrite?'🔗 Compartilhado: todos que abrirem este link veem e adicionam gastos em tempo real.':'👀 Você só pode visualizar. Peça acesso de "Colaborador" ou "Editor" ao dono do link.');
+  $('add').disabled=!canWrite;
+  db.collection('expenses').orderBy('ts','asc').onSnapshot(async snap=>{
+    items=snap.docs.map(d=>({id:d.id,...d.data()}));
+    render();resolveNames();
+  },e=>setSync('Não foi possível sincronizar ('+(e&&e.code||'erro')+').'));
+  db.doc('settings/main').onSnapshot(s=>{
+    const d=s.exists?s.data():{};limit=d.limit||0;rate=d.rate||0;applyInputs();render();
+  });
+}
+const setSync=t=>$('sync').textContent=t;
+function applyInputs(){
+  if(document.activeElement!==$('limit'))$('limit').value=limit||'';
+  if(document.activeElement!==$('rate'))$('rate').value=rate||'';
+}
+async function resolveNames(){
+  if(!userApi)return;
+  const ids=[...new Set(items.map(i=>i.by).filter(Boolean))].filter(x=>!(x in names));
+  if(!ids.length)return;
+  try{const ps=await userApi.profiles(ids);ids.forEach(id=>names[id]=(ps[id]&&ps[id].name)||'');render()}catch(e){}
+}
+const who=i=>!i.by?'':(i.by===me?'Você':(names[i.by]||'Outra pessoa'));
+
+/* ---------- tela ---------- */
+function render(){
+  const te=sumEur(),tb=sumBrl();
+  $('totaleur').textContent=eur(te);
+  $('totalbrl').textContent=rate>0||items.some(i=>i.rate)?'≈ '+brl(tb):'(informe a cotação para ver em R$)';
+  const f=$('fill'),st=$('status');
+  if(limit>0){
+    const p=te/limit*100;f.style.width=Math.min(p,100)+'%';
+    f.style.background=p>=100?'var(--er)':p>=80?'var(--wa)':'var(--ok)';
+    st.textContent=te>limit?`⚠️ Limite ultrapassado em ${eur(te-limit)} (limite: ${eur(limit)})`
+      :`${p.toFixed(0)}% do limite usado — restam ${eur(limit-te)}`;
+  }else{f.style.width='0';st.textContent='Nenhum limite definido.'}
+  const sorted=items.slice().sort((a,b)=>(b.t||'').localeCompare(a.t||'')||(b.ts||0)-(a.ts||0));
+  $('list').innerHTML=sorted.length?sorted.map(i=>{
+    const b=brlOf(i);
+    return `<div class="item"><div class="d"><b>${esc(i.d)}</b><small>${fd(i.t)}${who(i)?' · '+esc(who(i)):''}</small></div>
+    <span class="v">${eur(eurOf(i))}<small>${b==null?'—':brl(b)}</small></span>
+    ${canWrite?`<button class="x" data-id="${esc(i.id)}" aria-label="Remover">✕</button>`:''}</div>`}).join('')
+   :'<div class="empty">Nenhum gasto adicionado ainda.</div>';
+}
+
+$('dt').value=today();
+$('add').onclick=async()=>{
+  const d=$('desc').value.trim()||'Gasto',v=parseFloat($('val').value),cur=$('cur').value;
+  if(!(v>0)){$('val').focus();return}
+  if(cur==='BRL'&&!(rate>0)){$('addmsg').textContent='Para lançar em reais, informe antes a cotação (1 € = R$).';$('rate').focus();return}
+  $('addmsg').textContent='';
+  const it={id:'g'+Date.now()+Math.random().toString(36).slice(2,6),d,v,cur,rate:rate||0,t:$('dt').value||today(),ts:Date.now(),by:me||''};
+  $('desc').value='';$('val').value='';$('desc').focus();
+  try{await store.put(it)}catch(e){$('addmsg').textContent='Não foi possível salvar o gasto.'}
+};
+['desc','val'].forEach(id=>$(id).addEventListener('keydown',e=>{if(e.key==='Enter')$('add').click()}));
+$('list').onclick=async e=>{const id=e.target.dataset&&e.target.dataset.id;if(id){try{await store.del(id)}catch(err){$('note').textContent='Não foi possível remover.'}}};
+let tm;const saveSettings=()=>{clearTimeout(tm);tm=setTimeout(()=>store&&store.settings().catch(()=>{$('note').textContent='Sem permissão para alterar limite/cotação.'}),500)};
+$('limit').oninput=()=>{limit=parseFloat($('limit').value)||0;render();saveSettings()};
+$('rate').oninput=()=>{rate=parseFloat($('rate').value)||0;render();saveSettings()};
+$('clear').onclick=async()=>{if(items.length&&confirm('Apagar TODOS os gastos'+(store===local?'?':' para todos que usam este link?'))){try{await store.clear()}catch(e){$('note').textContent='Não foi possível apagar.'}}};
+
+/* ---------- PDF ---------- */
+$('pdf').onclick=async()=>{
+  if(!items.length){$('note').textContent='Adicione pelo menos um gasto antes de gerar o PDF.';return}
+  const {jsPDF}=window.jspdf||{};
+  let dl=null;try{dl=window.claude?await claude.use('downloads'):null}catch(e){}
+  if(!jsPDF||!dl){window.print();return}
+  const doc=new jsPDF(),W=210;let y=20;
+  const R=(t,x,yy)=>doc.text(t,x,yy,{align:'right'});
+  doc.setFontSize(18);doc.text('Relatório de Gastos - Viagem à Itália',14,y);y+=8;
+  doc.setFontSize(10);doc.setTextColor(110);doc.text('Gerado em '+new Date().toLocaleString('pt-BR'),14,y);y+=10;
+  doc.setTextColor(0);doc.setFont(undefined,'bold');
+  doc.text('Data',14,y);doc.text('Descrição',36,y);doc.text('Quem',112,y);R('Euro (EUR)',160,y);R('Real (R$)',W-14,y);
+  doc.setFont(undefined,'normal');y+=3;doc.line(14,y,W-14,y);y+=6;
+  items.slice().sort((a,b)=>(a.t||'').localeCompare(b.t||'')||(a.ts||0)-(b.ts||0)).forEach(i=>{
+    if(y>270){doc.addPage();y=20}
+    const b=brlOf(i);
+    doc.text(fd(i.t),14,y);doc.text(doc.splitTextToSize(i.d,70)[0],36,y);doc.text(doc.splitTextToSize(who(i)||'-',38)[0],112,y);
+    R(eur(eurOf(i)),160,y);R(b==null?'-':brl(b),W-14,y);y+=7;
+  });
+  y+=2;doc.line(14,y,W-14,y);y+=8;
+  if(y>250){doc.addPage();y=20}
+  const te=sumEur();
+  doc.setFont(undefined,'bold');doc.setFontSize(12);
+  doc.text('Total gasto: '+eur(te)+'  (≈ '+brl(sumBrl())+')',14,y);y+=8;
+  doc.setFont(undefined,'normal');
+  if(limit>0){
+    doc.text('Limite definido: '+eur(limit),14,y);y+=7;
+    const r=limit-te;
+    doc.text(r>=0?'Saldo restante: '+eur(r):'Ultrapassou o limite em: '+eur(-r),14,y);y+=7;
+  }
+  if(rate>0){doc.setFontSize(10);doc.setTextColor(110);doc.text('Cotação atual: 1 EUR = '+brl(rate),14,y)}
+  try{await dl.save({filename:'gastos-viagem-italia.pdf',data:doc.output('arraybuffer')});$('note').textContent='PDF salvo!'}
+  catch(e){$('note').textContent=e&&e.code==='declined'?'Download cancelado.':'Não foi possível salvar o PDF.'}
+};
+/* ---------- contagem regressiva e abas ---------- */
+const DEP=Date.UTC(2027,2,25,1,15),RET=Date.UTC(2027,3,7,13,35); // saída 24/03 22:15 (Brasília); chegada 07/04 10:35
+function tick(){
+  const now=Date.now(),d=DEP-now;
+  if(d>0){
+    const dd=Math.floor(d/864e5),h=Math.floor(d%864e5/36e5),m=Math.floor(d%36e5/6e4);
+    $('cddays').textContent=dd;$('cdlabel').textContent=dd===1?'dia para a saída (24/03/2027)':'dias para a saída (24/03/2027)';
+    $('cdparts').innerHTML=`<span>${h} h</span><span>${m} min</span>`;
+  }else if(now<RET){$('cddays').textContent='✈️';$('cdlabel').textContent='A viagem está acontecendo!';$('cdparts').textContent=''}
+  else{$('cddays').textContent='🏠';$('cdlabel').textContent='Viagem concluída';$('cdparts').textContent=''}
+}
+tick();setInterval(tick,3e4);
+function showTab(t){$('tab-gastos').hidden=t!=='g';$('tab-roteiro').hidden=t!=='r';$('tg').classList.toggle('on',t==='g');$('tr').classList.toggle('on',t==='r')}
+$('tg').onclick=()=>showTab('g');$('tr').onclick=()=>showTab('r');
+/* ---------- tema completo (só neste aparelho) ---------- */
+const PRE={toscana:['Toscana','#b5532f','#f6efe4','#fffaf2','#3a2a1f'],amalfi:['Amalfi','#1f7fa8','#eef5f7','#ffffff','#14323f'],roma:['Roma','#9c2f2a','#f3ece6','#fffdfa','#2b1d1a'],bandeira:['Bandeira','#1f8f4e','#f8f7f2','#ffffff','#1c2a22'],limoncello:['Limoncello','#c99a12','#fffbe8','#ffffff','#3b3414'],rose:['Rosé','#d4577f','#fdf1f3','#ffffff','#3d2430'],notte:['Notte','#e0a64a','#14161f','#1d2030','#efe8d8'],clean:['Clean','#2f9e6e','#f7f7f5','#ffffff','#1f2328']};
+const FNT={elegante:['Elegante (Playfair)',"'Playfair Display',Georgia,serif"],classica:['Clássica (Cormorant)',"'Cormorant Garamond',Georgia,serif"],romantica:['Romântica (Lora)',"'Lora',Georgia,serif"],moderna:['Moderna (Inter)',"Inter,system-ui,sans-serif"]};
+const RAD={reto:6,suave:14,redondo:24};
+const fromPre=k=>({preset:k,ac:PRE[k][1],bg:PRE[k][2],card:PRE[k][3],tx:PRE[k][4]});
+let th={...fromPre('toscana'),font:'elegante',rad:'suave'};
+try{const t=JSON.parse(localStorage.getItem('tema-viagem-v2')||'null');if(t)th={...th,...t}}catch(e){}
+const lum=h=>{const n=parseInt(h.slice(1),16),f=v=>{v/=255;return v<=.03928?v/12.92:Math.pow((v+.055)/1.055,2.4)};return .2126*f(n>>16&255)+.7152*f(n>>8&255)+.0722*f(n&255)};
+function applyTheme(syncInputs){
+  const r=document.documentElement.style;
+  r.setProperty('--ac',th.ac);r.setProperty('--bg',th.bg);r.setProperty('--card',th.card);r.setProperty('--tx',th.tx);
+  r.setProperty('--on',lum(th.ac)>.45?'#1b1b1b':'#ffffff');
+  r.setProperty('--fh',(FNT[th.font]||FNT.elegante)[1]);r.setProperty('--r',(RAD[th.rad]||14)+'px');
+  document.querySelectorAll('#chips button').forEach(b=>b.classList.toggle('on',b.dataset.p===th.preset));
+  document.querySelectorAll('#rad button').forEach(b=>b.classList.toggle('on',b.dataset.r===th.rad));
+  if(syncInputs){['ac','bg','card','tx'].forEach(k=>$('c-'+k).value=th[k]);$('fnt').value=th.font}
+  try{localStorage.setItem('tema-viagem-v2',JSON.stringify(th))}catch(e){}
+}
+$('chips').innerHTML=Object.entries(PRE).map(([k,v])=>`<button data-p="${k}"><i><b style="background:${v[1]}"></b><b style="background:${v[2]}"></b><b style="background:${v[4]}"></b></i>${v[0]}</button>`).join('');
+$('fnt').innerHTML=Object.entries(FNT).map(([k,v])=>`<option value="${k}">${v[0]}</option>`).join('');
+$('chips').onclick=e=>{const b=e.target.closest('button');if(b){th={...th,...fromPre(b.dataset.p)};applyTheme(true)}};
+['ac','bg','card','tx'].forEach(k=>$('c-'+k).oninput=e=>{th[k]=e.target.value;th.preset='';applyTheme(false)});
+$('fnt').onchange=e=>{th.font=e.target.value;applyTheme(false)};
+$('rad').onclick=e=>{const b=e.target.closest('button');if(b){th.rad=b.dataset.r;applyTheme(false)}};
+$('treset').onclick=()=>{th={...fromPre('toscana'),font:'elegante',rad:'suave'};applyTheme(true)};
+$('tbtn').onclick=()=>$('tpanel').classList.toggle('open');
+applyTheme(true);
+
+init();
+</script>
+</body>
+</html>
